@@ -1,0 +1,44 @@
+services:
+  valuecell-backend:
+    build:
+      context: ./python
+      dockerfile: ../docker/DockerFile
+    command: ["uv", "run", "python", "-m", "valuecell.server.main"]
+    ports:
+      - "8000:8000"
+    environment:
+      # Explicitly bind to all interfaces inside the container
+      API_HOST: "0.0.0.0"
+      API_PORT: "8000"
+      # Optional: enable FastAPI docs (/docs, /redoc)
+      API_DEBUG: "true"
+      APP_ENVIRONMENT: "development"
+      CORS_ORIGINS: "*"
+    volumes:
+      # Persist DB / knowledge / system .env directory (Linux container uses /root/.config/valuecell)
+      - valuecell_data:/root/.config/valuecell
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  valuecell-frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.frontend
+      args:
+        VITE_API_BASE_URL: "http://localhost:8000/api/v1"
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: "production"
+    depends_on:
+      valuecell-backend:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  valuecell_data:
