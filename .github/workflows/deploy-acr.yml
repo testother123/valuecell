@@ -33,9 +33,7 @@ jobs:
           context: ./frontend
           file: ./docker/Dockerfile.frontend
           push: true
-          tags: |
-            ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
-            ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:latest
+          tags: ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ env.NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -62,8 +60,6 @@ jobs:
           context: ./python
           file: ./docker/DockerFile
           push: true
-          tags: |
-            ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}
-            ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:latest
+          tags: ${{ secrets.ALIYUN_ACR_REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BACKEND_IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max

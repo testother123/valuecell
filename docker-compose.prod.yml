@@ -1,0 +1,45 @@
+services:
+  valuecell-backend:
+    image: crpi-a1jeg0asa5vw4919.cn-guangzhou.personal.cr.aliyuncs.com/lingcetech/valuecell-backend:latest
+    container_name: valuecell-backend
+    command: ["uv", "run", "python", "-m", "valuecell.server.main"]
+    ports:
+      - "8000:8000"
+    environment:
+      API_HOST: "0.0.0.0"
+      API_PORT: "8000"
+      API_DEBUG: "false"
+      APP_ENVIRONMENT: "production"
+      CORS_ORIGINS: "*"
+    volumes:
+      - valuecell_data:/root/.config/valuecell
+    networks:
+      - lingce-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  valuecell-web:
+    image: crpi-a1jeg0asa5vw4919.cn-guangzhou.personal.cr.aliyuncs.com/lingcetech/valuecell-web:latest
+    container_name: valuecell-web
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: "production"
+    depends_on:
+      valuecell-backend:
+        condition: service_started
+    networks:
+      - lingce-network
+    restart: unless-stopped
+
+volumes:
+  valuecell_data:
+
+networks:
+  lingce-network:
+    external: true
