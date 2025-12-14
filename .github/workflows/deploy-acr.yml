@@ -1,10 +1,8 @@
 name: Build and Push to Aliyun ACR
-
 on:
   push:
     branches:
       - main
-
 env:
   NAMESPACE: lingcetech
   FRONTEND_IMAGE: valuecell-web
