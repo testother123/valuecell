@@ -1,5 +1,6 @@
 services:
   valuecell-backend:
+
     build:
       context: ./python
       dockerfile: ../docker/DockerFile
