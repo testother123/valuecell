@@ -6,6 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      ENV: "local_dev"
       API_HOST: "0.0.0.0"
       API_PORT: "8000"
       API_DEBUG: "false"
@@ -17,7 +18,7 @@ services:
       - lingce-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
